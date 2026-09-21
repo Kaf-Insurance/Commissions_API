@@ -1,0 +1,221 @@
+{
+  "info": {
+    "_postman_id": "broker-commission-api-v1",
+    "name": "Broker Commission API",
+    "description": "KAF Broker Commission API endpoints for login, bank details, commission listing, commission status, and E-Invoice upload.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "1.1 Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login/",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"broker@example.com\",\n  \"password\": \"your_password\"\n}"
+            },
+            "description": "Broker login with email and password. Returns JWT access and refresh tokens."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Bank Details",
+      "item": [
+        {
+          "name": "2.1 Get Bank Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bank-details/",
+              "host": ["{{base_url}}"],
+              "path": ["bank-details"]
+            },
+            "description": "Retrieve the authenticated broker's bank details."
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 Add Bank Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bank-details/",
+              "host": ["{{base_url}}"],
+              "path": ["bank-details"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "bank_name",
+                  "value": "CIB",
+                  "type": "text"
+                },
+                {
+                  "key": "bank_branch_name",
+                  "value": "Mohandeseen",
+                  "type": "text"
+                },
+                {
+                  "key": "account_name",
+                  "value": "John Doe Broker Account",
+                  "type": "text"
+                },
+                {
+                  "key": "account_number",
+                  "value": "1234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "swift_code",
+                  "value": "CIBEGCXA",
+                  "type": "text"
+                },
+                {
+                  "key": "iban",
+                  "value": "EG000000000000000000000000",
+                  "type": "text"
+                },
+                {
+                  "key": "stamped_bank_details",
+                  "type": "file",
+                  "src": "/path/to/stamped_bank_details.pdf"
+                }
+              ]
+            },
+            "description": "Submit broker bank details with a stamped PDF."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Commissions",
+      "item": [
+        {
+          "name": "3.1 List Commissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/commissions/?status=e_invoice_uploaded&paid=false",
+              "host": ["{{base_url}}"],
+              "path": ["commissions"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "e_invoice_uploaded"
+                },
+                {
+                  "key": "paid",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "List all commissions for the authenticated broker with optional filters."
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 Commission Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/commissions/{{commission_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["commissions", "{{commission_id}}"]
+            },
+            "description": "Get the full details and status of a specific commission."
+          },
+          "response": []
+        },
+        {
+          "name": "3.3 Upload E-Invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/commissions/{{commission_id}}/upload-e-invoice/",
+              "host": ["{{base_url}}"],
+              "path": ["commissions", "{{commission_id}}", "upload-e-invoice"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "e_invoice",
+                  "type": "file",
+                  "src": "/path/to/e_invoice.pdf"
+                }
+              ]
+            },
+            "description": "Upload an E-Invoice PDF for a commission. Triggers AI matching and automatic status update."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://appstaging.kaf.com.eg/sme/api/broker-commission",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "commission_id",
+      "value": "42",
+      "type": "string"
+    }
+  ]
+}
